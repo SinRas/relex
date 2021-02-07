@@ -15,6 +15,10 @@ class AgentAbstract:
     def __init__( self, name, n_arms ):
         self.name = name
         self.n_arms = n_arms
+        self.reset()
+        return
+    # Reset
+    def reset( self ):
         self.rewards_sum = np.zeros( n_arms )
         self.arm_pull_counts = np.zeros( n_arms, dtype=np.int )
         self.action_weights = np.ones( n_arms )
