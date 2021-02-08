@@ -19,9 +19,9 @@ class AgentAbstract:
         return
     # Reset
     def reset( self ):
-        self.rewards_sum = np.zeros( n_arms )
-        self.arm_pull_counts = np.zeros( n_arms, dtype=np.int )
-        self.action_weights = np.ones( n_arms )
+        self.rewards_sum = np.zeros( self.n_arms )
+        self.arm_pull_counts = np.zeros( self.n_arms, dtype=np.int )
+        self.action_weights = np.ones( self.n_arms )
         self.actions = np.arange( self.n_arms )
         return
     # Decide
@@ -67,6 +67,9 @@ class AgentGreedy( AgentAbstract ):
     # Calculate Weights
     def _calculate_weights( self ):
         self.action_weights = ( self.rewards_sum + self.reward_initial ) / ( self.arm_pull_counts + 1 )
+        _value_max = self.action_weights.max()
+        _indices_max = self.action_weights == _value_max
+        self.action_weights[ ~_indices_max ] = 0.0
         return
 class AgentGreedyEps( AgentGreedy ):
     """Greedy Agent + Epsilon Exploration
