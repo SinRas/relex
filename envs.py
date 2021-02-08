@@ -29,7 +29,8 @@ class MultiArmedBanditsAbstract:
         # Check Initialization Done
         assert not self.mus is None, "<step> Not initialized instance. Call 'reset' first"
         # Check Action Space
-        assert isinstance(action, int) and 0 <= action < self.n_arms, "<step> action should be of type 'int' and in range: [0, {})".format(self.n_arms)
+        assert not action is None and (int(action) == action) and 0 <= action < self.n_arms, "<step> action should be of type 'int' and in range: [0, {})".format(self.n_arms)
+        action = int(action)
         # Reward
         reward = int( np.random.rand() <= self.mus[action] )
         # Return

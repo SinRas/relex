@@ -31,7 +31,8 @@ class AgentAbstract:
     # Update
     def update( self, action, reward ):
         # Check Action Space
-        assert isinstance(action, int) and 0 <= action < self.n_arms, "<update> action should be of type 'int' and in range: [0, {})".format(self.n_arms)
+        assert not action is None and (int(action) == action) and 0 <= action < self.n_arms, "<update> action should be of type 'int' and in range: [0, {})".format(self.n_arms)
+        action = int(action)
         # General Updates
         self.arm_pull_counts[action] += 1
         self.rewards_sum[action] += reward
@@ -90,4 +91,36 @@ class AgentGreedyEps( AgentGreedy ):
             action = np.random.choice( self.actions )
         else:
             action = super().decide()
+        return( action )
+class AgentGreedyEpsDecaying( AgentGreedyEps ):
+    """Greedy Agent + Epsilon Exploration + Decay
+    """
+    # Constructor
+    def __init__( self, n_arms, epsilon, reward_initial = 1.0 ):
+        # Super
+        super().__init__( n_arms = n_arms, epsilon = epsilon, reward_initial = reward_initial )
+        self.name = "agent_greedy_epsilon_decaying_{}_{}_{}".format( n_arms, epsilon, reward_initial )
+        self.t = 1
+        self.ns = np.zeros(2)
+        # Return
+        return
+    # Reset
+    def reset( self ):
+        super().reset()
+        self.t = 1
+        self.ns = np.zeros(2)
+        return
+    # Update
+    def update( self, action, reward ):
+        super().update( action, reward )
+        self.t += 1
+        return
+    # Decide
+    def decide( self ):
+        if( np.random.rand() <= ( self.epsilon / np.sqrt(self.t) ) ):
+            action = np.random.choice( self.actions )
+            self.ns[1] += 1
+        else:
+            action = super().decide()
+            self.ns[0] += 1
         return( action )
