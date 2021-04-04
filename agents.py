@@ -90,14 +90,15 @@ class AgentGreedyEps( AgentGreedy ):
         else:
             action = super().decide()
         return( action )
-class AgentGreedyEpsDecaying( AgentGreedyEps ):
+class AgentGreedyEpsDecaying( AgentGreedy ):
     """Greedy Agent + Epsilon Exploration + Decay
     """
     # Constructor
     def __init__( self, n_arms, epsilon, reward_initial = 1.0 ):
         # Super
-        super().__init__( n_arms = n_arms, epsilon = epsilon, reward_initial = reward_initial )
+        super().__init__( n_arms = n_arms, reward_initial = reward_initial )
         self.name = "agent_greedy_epsilon_decaying_{}_{}_{}".format( n_arms, epsilon, reward_initial )
+        self.epsilon = epsilon
         self.t = 1
         self.ns = np.zeros(2)
         # Return
@@ -115,7 +116,7 @@ class AgentGreedyEpsDecaying( AgentGreedyEps ):
         return
     # Decide
     def decide( self ):
-        if( np.random.rand() <= ( self.epsilon / np.sqrt(self.t) ) ):
+        if( np.random.rand() <= ( self.epsilon / np.log2(self.t+1) ) ):
             action = np.random.choice( self.actions )
             self.ns[1] += 1
         else:
