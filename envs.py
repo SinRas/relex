@@ -23,7 +23,6 @@ class MultiArmedBanditsAbstract:
     # Reset
     def reset( self ):
         raise ValueError( '<reset> Not implemented.' )
-        return
     # Step
     def step( self, action ):
         # Check Initialization Done

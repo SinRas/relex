@@ -43,13 +43,11 @@ class AgentAbstract:
         # Return
         return
     # Update Model Specific
-    def _update_model_specific( self ):
+    def _update_model_specific( self, action, reward ):
         raise ValueError( '<_update_model_specific> Not implemented.' )
-        return
     # Calculate Weights
     def _calculate_weights( self ):
         raise ValueError( '<_calculate_weights> Not implemented.' )
-        return
 class AgentGreedy( AgentAbstract ):
     """Greedy Agent
     """

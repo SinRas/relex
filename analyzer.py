@@ -33,7 +33,7 @@ class Analyzer:
         return
     # Forward
     def forward( self, n_steps ):
-        for i in range(n_steps):
+        for _ in range(n_steps):
             # Decide
             action = self.agent.decide()
             mu_hats = ( self.agent.rewards_sum + self.agent.reward_initial ) / ( self.agent.arm_pull_counts + 1 )
