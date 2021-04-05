@@ -1,4 +1,8 @@
 """Agent Classes
+
+TODO: separate "value/preference estimators" from "agents". there are value estimatores that estimate, e.g. reward probability
+    and get updated via `update` function by observing new info.
+    There are agents that decide based on their information: Greedy, EpsilonGreedy, DecayingEpsilonGreedy.
 """
 # Modules
 import numpy as np
