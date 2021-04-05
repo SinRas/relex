@@ -50,6 +50,7 @@ class AgentAbstract:
         raise ValueError( '<_calculate_weights> Not implemented.' )
 class AgentGreedy( AgentAbstract ):
     """Greedy Agent
+    Q_{n+1} = ( 1 - 1/n ) * Q_{n} + 1/n * R_{n}
     """
     # Constructor
     def __init__( self, n_arms, reward_initial = 1.0 ):
@@ -66,6 +67,37 @@ class AgentGreedy( AgentAbstract ):
     # Calculate Weights
     def _calculate_weights( self ):
         self.action_weights = ( self.rewards_sum + self.reward_initial ) / ( self.arm_pull_counts + 1 )
+        _value_max = self.action_weights.max()
+        _indices_max = self.action_weights == _value_max
+        self.action_weights[ ~_indices_max ] = 0.0
+        return
+class AgentGreedyAlpha( AgentAbstract ):
+    """Greedy Agent Alpha
+    Q_{n+1} = ( 1 - \alpha ) * Q_{n} + \alpha * R_{n}
+    """
+    # Constructor
+    def __init__( self, n_arms, alpha, reward_initial = 1.0 ):
+        # Parameters
+        self.alpha = alpha
+        self.reward_initial = reward_initial
+        # Super
+        super().__init__( name = "agent_greedy_alpha_{}_{}_{}".format( n_arms, alpha, reward_initial ), n_arms = n_arms )
+        
+        self._calculate_weights()
+        # Return
+        return
+    # Reset
+    def reset( self ):
+        super().reset()
+        self.qs = np.ones( self.n_arms ) * self.reward_initial
+        return
+    # Update Model Specific
+    def _update_model_specific( self, action, reward ):
+        self.qs[action] += self.alpha * ( reward - self.qs[action] )
+        return
+    # Calculate Weights
+    def _calculate_weights( self ):
+        self.action_weights = self.qs.copy()
         _value_max = self.action_weights.max()
         _indices_max = self.action_weights == _value_max
         self.action_weights[ ~_indices_max ] = 0.0
